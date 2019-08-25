@@ -22,19 +22,39 @@ $CONFIG['rrdtool_opts'] = array();
 #$CONFIG['cat']['Mailservers'] = '/mail\d+/';
 
 # default plugins to show on host page
-$CONFIG['overview'] = array('load', 'cpu', 'memory', 'swap');
+$CONFIG['overview'] = array('load', 'interface', 'memory', 'sensors', 'uptime', 'cpufreq', 'df', 'disk');
 
 # example of filter to show only the if_octets of eth0 on host page
 # (interface must be enabled in the overview config array)
-#$CONFIG['overview_filter']['interface'] = array('ti' => 'eth0', 't' => 'if_octets');
+$CONFIG['overview_filter']['interface'] = [
+ ['pi' => 'eth0', 't' => 'if_octets'],
+ ['pi' => 'enp4s0', 't' => 'if_octets'],
+ ['pi' => 'venet0', 't' => 'if_octets'],
+ ['pi' => 'ens3', 't' => 'if_octets'],
+ ['pi' => 'eno1', 't' => 'if_octets']
+];
+$CONFIG['overview_filter']['smart'] = array('t' => 'smart_attribute');
+$CONFIG['overview_filter']['disk'] = [
+ ['pi' => 'sda', 't' => 'disk_octets'],
+ ['pi' => 'sdb', 't' => 'disk_octets'],
+ ['pi' => 'sdc', 't' => 'disk_octets'],
+ ['pi' => 'sdd', 't' => 'disk_octets'],
+];
+$CONFIG['overview_filter']['df'] = [
+	array('pi' => 'dolan'),
+	array('pi' => 'root'),
+	array('pi' => 'red'),
+	array('pi' => 'slome')	
+];
+$CONFIG['overview_filter']['sensors'] = [array('t' => 'coretemp-isa-0000'), ['t' => 'temperature']];
 
 # default plugins time range
-$CONFIG['time_range']['default'] = 86400;
+$CONFIG['time_range']['default'] = 86400 * 7;
 $CONFIG['time_range']['uptime']  = 31536000;
 
 # show load averages and used memory on overview page
 $CONFIG['showload'] = true;
-$CONFIG['showmem'] = false;
+$CONFIG['showmem'] = true;
 $CONFIG['showtime'] = false;
 
 $CONFIG['term'] = array(
@@ -51,20 +71,20 @@ $CONFIG['term'] = array(
 $CONFIG['network_datasize'] = 'bytes';
 
 # "png", "svg", "canvas" or "hybrid" (canvas on detail page, png on the others) graphs
-$CONFIG['graph_type'] = 'png';
+$CONFIG['graph_type'] = 'hybrid';
 
 # For canvas graphs, use 'async' or 'sync' fetch method
-$CONFIG['rrd_fetch_method'] = 'sync';
+$CONFIG['rrd_fetch_method'] = 'async';
 
 # use the negative X-axis in I/O graphs
 $CONFIG['negative_io'] = false;
 
 # add XXth percentile line + legend to network graphs
 # false = disabled; 95 = 95th percentile
-$CONFIG['percentile'] = false;
+$CONFIG['percentile'] = 95;
 
 # create smooth graphs (rrdtool -E)
-$CONFIG['graph_smooth'] = false;
+$CONFIG['graph_smooth'] = true;
 
 # draw min/max spikes in a lighter color in graphs with type default
 $CONFIG['graph_minmax'] = false;

@@ -343,13 +343,23 @@ function graphs_from_plugin($host, $plugin, $overview=false) {
 
 	foreach ($plugindata as $items) {
 
-		if (
-			$overview && isset($CONFIG['overview_filter'][$plugin]) &&
-			$CONFIG['overview_filter'][$plugin] !== array_intersect_assoc($CONFIG['overview_filter'][$plugin], $items)
-		) {
-			continue;
+		if ($overview && isset($CONFIG['overview_filter'][$plugin]))
+		{
+			$ok = false;
+			foreach ($CONFIG['overview_filter'][$plugin] as &$filter)
+			{
+				if ($filter === array_intersect_assoc($filter, $items))
+				{
+					$ok = true;
+					break;
+				}
+			}
+			if (!$ok)
+			{
+				continue;
+			}
 		}
-
+		
 		$items['h'] = $host;
 
 		$time = array_key_exists($plugin, $CONFIG['time_range'])
