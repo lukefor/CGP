@@ -42,8 +42,17 @@ class Type_GenericIO extends Type_Base {
 			}
 		}
 
-		$rrdgraph[] = sprintf('CDEF:overlap=avg_%s,avg_%s_neg,LT,avg_%1$s,avg_%2$s_neg,IF',
-						crc32hex($sources[0]), crc32hex($sources[1]));
+        if (count($sources) == 1)
+        {
+          //              $rrdgraph[] = sprintf('CDEF:overlap=avg_%s,LT,avg_%1$s',
+          //                  crc32hex($sources[0]));
+
+        }
+        else
+        {
+            $rrdgraph[] = sprintf('CDEF:overlap=avg_%s,avg_%s_neg,LT,avg_%1$s,avg_%2$s_neg,IF',
+                            crc32hex($sources[0]), crc32hex($sources[1]));
+        }
 
 		$i = 0;
 		foreach($sources as $source) {
@@ -51,7 +60,7 @@ class Type_GenericIO extends Type_Base {
 			$i++;
 		}
 
-		if (!$this->negative_io) {
+		if (!$this->negative_io && count($sources) != 1) {
 			$rrdgraph[] = sprintf('AREA:overlap#%s',
 				$this->get_faded_color(
 					$this->get_faded_color($this->colors[$sources[0]]),
@@ -82,7 +91,8 @@ class Type_GenericIO extends Type_Base {
 				$i++;
 			}
 		}
-
+//var_dump($rrdgraph);
+//exit;
 		return $rrdgraph;
 	}
 }

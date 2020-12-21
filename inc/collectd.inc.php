@@ -24,6 +24,8 @@ function collectd_hosts() {
 # return files in directory. this will recurse into subdirs
 # infinite loop may occur
 function get_host_rrd_files($dir) {
+	global $CONFIG;
+    
 	$files = array();
 
 	$objects = new RegexIterator(
@@ -36,7 +38,13 @@ function get_host_rrd_files($dir) {
 		$relativePathName = str_replace($dir.'/', '', $object->getPathname());
 		if (!preg_match('/^.+\/.+\.rrd$/', $relativePathName))
 			continue;
-		$files[] = $relativePathName;
+        
+        //$result = shell_exec($CONFIG['rrdtool']." lastupdate ".escapeshellarg($object->getPathname()));
+        //if (preg_match('#^([0-9]+): #m', $result, $matches) && $matches[1] > time() - $CONFIG['filter_age'])
+        if (filemtime($object->getPathname()) > time() - $CONFIG['filter_age'])
+        {
+            $files[] = $relativePathName;
+        }        
 	}
 
 	return $files;

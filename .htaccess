@@ -1,7 +1,7 @@
 Options -Indexes
 
 <IfModule mod_deflate.c>
-	AddOutputFilterByType DEFLATE image/svg+xml
+	AddOutputFilterByType DEFLATE image/svg+xml text/plain
 	<Files "rrd.php">
 		SetOutputFilter DEFLATE
 	</Files>
@@ -11,3 +11,7 @@ Options -Indexes
 	RewriteEngine On
 	RewriteRule ^.git(ignore|/) - [F,L]
 </IfModule>
+
+<Files rrd.php>
+	XSendFile on
+</Files>
