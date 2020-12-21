@@ -4,6 +4,7 @@ require_once 'conf/common.inc.php';
 require_once 'inc/functions.inc.php';
 require_once 'inc/collectd.inc.php';
 
+$flush = (bool)GET('flush');
 $plugin = GET('p');
 $type = GET('t');
 $width = GET('x') ? filter_var(GET('x'), FILTER_VALIDATE_INT, array(
@@ -146,4 +147,4 @@ if (isset($plugin_json[$type]['base']))
 if (isset($plugin_json[$type]['legend_format']))
 	$obj->rrd_format = $plugin_json[$type]['legend_format'];
 
-$obj->rrd_graph();
+$obj->rrd_graph($flush);

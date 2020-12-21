@@ -17,6 +17,7 @@ if (empty($_GET['y']))
 if ($CONFIG['graph_type'] == 'hybrid')
 	$CONFIG['graph_type'] = 'canvas';
 
+$_GET['flush'] = true;
 $host = GET('h');
 $plugin = GET('p');
 $pinstance = GET('pi');
