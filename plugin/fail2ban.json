@@ -1,0 +1,8 @@
+{
+	"gauge": {
+		"title": "Fail2ban on {{HOST}}",
+		"vertical": "Banned hosts",
+		"legend_format": "%5.0lf",
+		"rrdtool_opts": ["-l", "0"]
+	}
+}
