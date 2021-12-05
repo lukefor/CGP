@@ -24,6 +24,8 @@ function collectd_hosts() {
 # return files in directory. this will recurse into subdirs
 # infinite loop may occur
 function get_host_rrd_files($dir) {
+	global $CONFIG;
+    
 	$files = array();
 
 	$objects = new RegexIterator(
@@ -36,7 +38,13 @@ function get_host_rrd_files($dir) {
 		$relativePathName = str_replace($dir.'/', '', $object->getPathname());
 		if (!preg_match('/^.+\/.+\.rrd$/', $relativePathName))
 			continue;
-		$files[] = $relativePathName;
+        
+        //$result = shell_exec($CONFIG['rrdtool']." lastupdate ".escapeshellarg($object->getPathname()));
+        //if (preg_match('#^([0-9]+): #m', $result, $matches) && $matches[1] > time() - $CONFIG['filter_age'])
+        if (filemtime($object->getPathname()) > time() - $CONFIG['filter_age'])
+        {
+            $files[] = $relativePathName;
+        }        
 	}
 
 	return $files;
@@ -90,15 +98,18 @@ function collectd_plugindata($host, $plugin=NULL) {
 
 # returns an array of all plugins of a host
 function collectd_plugins($host) {
-	if (!$plugindata = collectd_plugindata($host))
+	global $CONFIG;
+	$hostdir = $CONFIG['datadir'].'/'.$host;
+	if (!is_dir($hostdir))
 		return false;
 
+	$plugin_dirs = glob($hostdir .'/*', GLOB_ONLYDIR);
 	$plugins = array();
-	foreach ($plugindata as $item) {
-		if (!in_array($item['p'], $plugins))
-			$plugins[] = $item['p'];
+	foreach($plugin_dirs as $item) {
+		preg_match('#/([\w_]+)[^/]*$#', $item, $matches);
+		if (!in_array($matches[1], $plugins))
+			$plugins[] = $matches[1];
 	}
-	sort($plugins);
 
 	return $plugins ? $plugins : false;
 }

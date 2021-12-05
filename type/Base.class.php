@@ -203,9 +203,12 @@ class Type_Base {
 		return $files ? $files : array();
 	}
 
-	function rrd_graph($debug = false) {
-		$this->collectd_flush();
-
+	function rrd_graph($flush = false, $debug = false) {
+        if ($flush)
+        {
+            $this->collectd_flush();
+        }
+        
 		$colors = $this->colors;
 		$this->rainbow_colors();
 		$this->colors = $colors + $this->colors;

@@ -11,12 +11,13 @@ if (!$path) {
 }
 
 if ( $file = validateRRDPath($CONFIG['datadir'], $path) ) {
-	header('Content-Type: application/octet-stream');
+	header('Content-Type: text/plain');
 	header('Content-Disposition: attachment; filename='.basename($file));
 	header("Expires: " .date(DATE_RFC822,strtotime($CONFIG['cache']." seconds")));
-	if(ob_get_length()) ob_clean();
+	/*if(ob_get_length()) ob_clean();
 	flush();
-	readfile($file);
+	readfile($file);*/
+	header("X-Sendfile: $file");
 } else {
 	header('HTTP/1.0 403 Forbidden');
 

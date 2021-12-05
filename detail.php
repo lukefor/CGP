@@ -14,9 +14,10 @@ if (empty($_GET['y']))
 	$_GET['y'] = $CONFIG['detail-height'];
 
 # set graph_type to canvas if hybrid
-if ($CONFIG['graph_type'] == 'hybrid')
+if ($CONFIG['graph_type'] == 'hybrid' && !$_GET['forcepng'])
 	$CONFIG['graph_type'] = 'canvas';
 
+$_GET['flush'] = true;
 $host = GET('h');
 $plugin = GET('p');
 $pinstance = GET('pi');
@@ -59,7 +60,13 @@ foreach($CONFIG['term'] as $key => $s) {
 		htmlentities(build_url('detail.php', $args)),
 		htmlentities($key));
 }
+{
+	$args = GET();
+	$args['forcepng'] = 1;
+	printf('<a %s href="%s">PNG</a>', $_GET['forcepng'] ? " class='selected' " : "", build_url('detail.php', $args)); 
+}
 print "</ul>\n";
+
 
 if ($CONFIG['graph_type'] == 'canvas') {
 	chdir($CONFIG['webdir']);
